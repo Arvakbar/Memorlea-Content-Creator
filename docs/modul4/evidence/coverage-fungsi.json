@@ -1,0 +1,292 @@
+{
+  "statements": {
+    "covered": 181,
+    "total": 181,
+    "pct": 100
+  },
+  "branches": {
+    "covered": 120,
+    "total": 121,
+    "pct": 99.17
+  },
+  "functions": [
+    {
+      "file": "js/admin.js",
+      "name": "renderSummaryCards",
+      "line": 180,
+      "statements": {
+        "covered": 7,
+        "total": 7,
+        "pct": 100
+      },
+      "branches": {
+        "covered": 0,
+        "total": 0,
+        "pct": null
+      },
+      "uncoveredStatements": [],
+      "uncoveredBranches": []
+    },
+    {
+      "file": "js/admin.js",
+      "name": "renderReminders",
+      "line": 711,
+      "statements": {
+        "covered": 15,
+        "total": 15,
+        "pct": 100
+      },
+      "branches": {
+        "covered": 17,
+        "total": 17,
+        "pct": 100
+      },
+      "uncoveredStatements": [],
+      "uncoveredBranches": []
+    },
+    {
+      "file": "js/admin.js",
+      "name": "filterTable",
+      "line": 236,
+      "statements": {
+        "covered": 12,
+        "total": 12,
+        "pct": 100
+      },
+      "branches": {
+        "covered": 14,
+        "total": 14,
+        "pct": 100
+      },
+      "uncoveredStatements": [],
+      "uncoveredBranches": []
+    },
+    {
+      "file": "js/admin.js",
+      "name": "saveStatus",
+      "line": 328,
+      "statements": {
+        "covered": 26,
+        "total": 26,
+        "pct": 100
+      },
+      "branches": {
+        "covered": 10,
+        "total": 10,
+        "pct": 100
+      },
+      "uncoveredStatements": [],
+      "uncoveredBranches": []
+    },
+    {
+      "file": "js/admin.js",
+      "name": "prevMonth",
+      "line": 533,
+      "statements": {
+        "covered": 5,
+        "total": 5,
+        "pct": 100
+      },
+      "branches": {
+        "covered": 2,
+        "total": 2,
+        "pct": 100
+      },
+      "uncoveredStatements": [],
+      "uncoveredBranches": []
+    },
+    {
+      "file": "js/admin.js",
+      "name": "nextMonth",
+      "line": 539,
+      "statements": {
+        "covered": 5,
+        "total": 5,
+        "pct": 100
+      },
+      "branches": {
+        "covered": 2,
+        "total": 2,
+        "pct": 100
+      },
+      "uncoveredStatements": [],
+      "uncoveredBranches": []
+    },
+    {
+      "file": "js/admin.js",
+      "name": "getPackageData",
+      "line": 645,
+      "statements": {
+        "covered": 7,
+        "total": 7,
+        "pct": 100
+      },
+      "branches": {
+        "covered": 7,
+        "total": 7,
+        "pct": 100
+      },
+      "uncoveredStatements": [],
+      "uncoveredBranches": []
+    },
+    {
+      "file": "js/admin.js",
+      "name": "getCityData",
+      "line": 655,
+      "statements": {
+        "covered": 9,
+        "total": 9,
+        "pct": 100
+      },
+      "branches": {
+        "covered": 4,
+        "total": 4,
+        "pct": 100
+      },
+      "uncoveredStatements": [],
+      "uncoveredBranches": []
+    },
+    {
+      "file": "js/admin.js",
+      "name": "filterKru",
+      "line": 1042,
+      "statements": {
+        "covered": 4,
+        "total": 4,
+        "pct": 100
+      },
+      "branches": {
+        "covered": 2,
+        "total": 2,
+        "pct": 100
+      },
+      "uncoveredStatements": [],
+      "uncoveredBranches": []
+    },
+    {
+      "file": "js/admin.js",
+      "name": "saveKru",
+      "line": 1077,
+      "statements": {
+        "covered": 14,
+        "total": 14,
+        "pct": 100
+      },
+      "branches": {
+        "covered": 7,
+        "total": 8,
+        "pct": 87.5
+      },
+      "uncoveredStatements": [],
+      "uncoveredBranches": [
+        {
+          "line": 1101,
+          "type": "cond-expr",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "file": "js/admin.js",
+      "name": "loadStats",
+      "line": 602,
+      "statements": {
+        "covered": 7,
+        "total": 7,
+        "pct": 100
+      },
+      "branches": {
+        "covered": 6,
+        "total": 6,
+        "pct": 100
+      },
+      "uncoveredStatements": [],
+      "uncoveredBranches": []
+    },
+    {
+      "file": "js/admin.js",
+      "name": "saveStats",
+      "line": 611,
+      "statements": {
+        "covered": 11,
+        "total": 11,
+        "pct": 100
+      },
+      "branches": {
+        "covered": 12,
+        "total": 12,
+        "pct": 100
+      },
+      "uncoveredStatements": [],
+      "uncoveredBranches": []
+    },
+    {
+      "file": "js/catalog-rules.js",
+      "name": "packageData",
+      "line": 11,
+      "statements": {
+        "covered": 10,
+        "total": 10,
+        "pct": 100
+      },
+      "branches": {
+        "covered": 14,
+        "total": 14,
+        "pct": 100
+      },
+      "uncoveredStatements": [],
+      "uncoveredBranches": []
+    },
+    {
+      "file": "js/catalog-rules.js",
+      "name": "voucherData",
+      "line": 27,
+      "statements": {
+        "covered": 6,
+        "total": 6,
+        "pct": 100
+      },
+      "branches": {
+        "covered": 9,
+        "total": 9,
+        "pct": 100
+      },
+      "uncoveredStatements": [],
+      "uncoveredBranches": []
+    },
+    {
+      "file": "js/admin-catalog.js",
+      "name": "loadCatalog",
+      "line": 11,
+      "statements": {
+        "covered": 12,
+        "total": 12,
+        "pct": 100
+      },
+      "branches": {
+        "covered": 4,
+        "total": 4,
+        "pct": 100
+      },
+      "uncoveredStatements": [],
+      "uncoveredBranches": []
+    },
+    {
+      "file": "js/admin-catalog.js",
+      "name": "saveCatalog",
+      "line": 62,
+      "statements": {
+        "covered": 31,
+        "total": 31,
+        "pct": 100
+      },
+      "branches": {
+        "covered": 10,
+        "total": 10,
+        "pct": 100
+      },
+      "uncoveredStatements": [],
+      "uncoveredBranches": []
+    }
+  ]
+}
