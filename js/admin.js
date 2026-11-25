@@ -58,31 +58,44 @@ let charts = {};
 // ─── Auth ─────────────────────────────────────────────────────────────────────
 
 document.addEventListener('DOMContentLoaded', async () => {
-  const { data: { session } } = await db.auth.getSession();
+  try {
+    const { data: { session }, error } = await db.auth.getSession();
 
-  if (!session) {
+    if (error || !session) {
+      clearSession();
+      return redirect('admin-login.html');
+    }
+
+    const loginAt = localStorage.getItem(SESSION_KEY);
+
+    const { data: { user }, error: userError } = await db.auth.getUser();
+    if (userError || !MemorleaAuth.isAdmin(user)) {
+      clearSession();
+      return redirect('admin-login.html');
+    }
+
+    if (loginAt && Date.now() - parseInt(loginAt) > SESSION_TIMEOUT_MS) {
+      await db.auth.signOut();
+      clearSession();
+      return redirect('admin-login.html');
+    }
+
+    if (!loginAt) setSession();
+
+    document.getElementById('admin-email').textContent = user.email;
+
+    const now = new Date();
+    calYear   = now.getFullYear();
+    calMonth  = now.getMonth();
+
+    scheduleAutoLogout(loginAt);
+    document.body.classList.remove('auth-pending');
+    await loadAll();
+  } catch (error) {
+    // Gagal verifikasi harus menutup akses, termasuk saat jaringan terputus.
     clearSession();
-    return redirect('admin-login.html');
+    redirect('admin-login.html');
   }
-
-  const loginAt = localStorage.getItem(SESSION_KEY);
-
-  if (loginAt && Date.now() - parseInt(loginAt) > SESSION_TIMEOUT_MS) {
-    await db.auth.signOut();
-    clearSession();
-    return redirect('admin-login.html');
-  }
-
-  if (!loginAt) setSession();
-
-  document.getElementById('admin-email').textContent = session.user.email;
-
-  const now = new Date();
-  calYear   = now.getFullYear();
-  calMonth  = now.getMonth();
-
-  scheduleAutoLogout(loginAt);
-  await loadAll();
 });
 
 function setSession()   { localStorage.setItem(SESSION_KEY, Date.now().toString()); }
@@ -118,13 +131,14 @@ function showSection(name, el) {
 
   const titles = {
     dashboard: 'Dashboard', bookings:  'Bookings',
-    kalender:  'Kalender',  analytics: 'Analytics', stats: 'Stats Counter',
+    kalender:  'Kalender',  analytics: 'Analytics', stats: 'Stats Counter', kru: 'Kru', packages: 'Paket Layanan', vouchers: 'Voucher / Diskon',
   };
   document.getElementById('section-title').textContent = titles[name] || name;
 
   if (name === 'analytics') renderAnalyticsCharts();
   if (name === 'kalender')  { renderCalendar(); renderAvailStats(); }
   if (name === 'kru')       loadKru();
+  if (name === 'packages' || name === 'vouchers') loadCatalog(name);
 }
 
 // ─── Data Loading ─────────────────────────────────────────────────────────────
@@ -193,7 +207,7 @@ function renderTable(data) {
 function bookingRow(b) {
   const tgl   = formatDate(b.wedding_date, { day:'numeric', month:'short', year:'numeric' });
   const color = STATUS.color[b.status] || '#888';
-  const pkg   = PACKAGE[b.package] || b.package || '—';
+  const pkg   = b.package_name_snapshot || PACKAGE[b.package] || b.package || '—';
 
   return `
     <tr style="cursor:pointer" onclick="openDetailModal('${b.id}')">
@@ -253,7 +267,7 @@ function openDetailModal(id) {
   detailId = id;
 
   const color   = STATUS.color[b.status] || '#888';
-  const pkg     = PACKAGE[b.package] || b.package || '—';
+  const pkg     = b.package_name_snapshot || PACKAGE[b.package] || b.package || '—';
   const tgl     = formatDate(b.wedding_date, { weekday:'long', day:'numeric', month:'long', year:'numeric' });
   const created = b.created_at
     ? new Date(b.created_at).toLocaleDateString('id-ID', { day:'numeric', month:'long', year:'numeric', hour:'2-digit', minute:'2-digit' })
@@ -267,6 +281,7 @@ function openDetailModal(id) {
   setText('d-phone',   b.phone   || '—');
   setText('d-date',    tgl);
   setText('d-package', pkg);
+  setText('d-price-summary', b.total_price == null ? 'Booking lama: rincian harga belum tercatat.' : `${MemorleaCatalog.money(b.package_price)} - diskon ${MemorleaCatalog.money(b.discount_amount)} = ${MemorleaCatalog.money(b.total_price)}${b.voucher_code ? ' / Voucher ' + b.voucher_code : ''} / ${b.package_duration_hours} jam`);
   setText('d-city',    b.city    || '—');
   setText('d-venue',   b.venue   || '—');
   setText('d-source',  b.source  || '—');
@@ -388,7 +403,7 @@ function exportToSheets() {
   const headers = ['Nama Pengantin','Email','No. HP','Tanggal Wedding','Paket','Kota','Venue','Catatan','Status','Tanggal Booking'];
   const rows    = allBookings.map(b => [
     b.couple_name || '', b.email || '', b.phone || '', b.wedding_date || '',
-    PACKAGE[b.package] || b.package || '', b.city || '', b.venue || '', b.notes || '',
+    b.package_name_snapshot || PACKAGE[b.package] || b.package || '', b.city || '', b.venue || '', b.notes || '',
     STATUS.label[b.status] || b.status || '',
     b.created_at ? new Date(b.created_at).toLocaleDateString('id-ID') : '',
   ]);
@@ -410,11 +425,11 @@ function printInvoice(id) {
 
   const tgl    = formatDate(b.wedding_date, { weekday:'long', day:'numeric', month:'long', year:'numeric' });
   const booked = b.created_at ? new Date(b.created_at).toLocaleDateString('id-ID', { day:'numeric', month:'long', year:'numeric' }) : '—';
-  const pkg    = PACKAGE[b.package] || b.package || '—';
+  const pkg    = b.package_name_snapshot || PACKAGE[b.package] || b.package || '—';
 
   const w = window.open('', '_blank');
   w.document.write(`<!DOCTYPE html><html lang="id"><head><meta charset="UTF-8"/>
-<title>Invoice – ${b.couple_name}</title>
+<title>Invoice – ${esc(b.couple_name)}</title>
 <style>
   body { font-family: Georgia, serif; max-width: 680px; margin: 40px auto; color: #2E1530; padding: 0 20px; }
   .header { text-align: center; border-bottom: 2px solid #4A2545; padding-bottom: 20px; margin-bottom: 30px; }
@@ -436,6 +451,7 @@ function printInvoice(id) {
   <tr><td>No. HP</td><td>${esc(b.phone || '—')}</td></tr>
   <tr><td>Tanggal Wedding</td><td>${tgl}</td></tr>
   <tr><td>Paket</td><td><strong>${esc(pkg)}</strong></td></tr>
+  ${b.total_price == null ? '' : '<tr><td>Harga paket</td><td>' + MemorleaCatalog.money(b.package_price) + '</td></tr><tr><td>Diskon / Voucher</td><td>' + MemorleaCatalog.money(b.discount_amount) + ' / ' + esc(b.voucher_code || '-') + '</td></tr><tr><td>Total paket</td><td>' + MemorleaCatalog.money(b.total_price) + '</td></tr>'}
   <tr><td>Kota</td><td>${esc(b.city || '—')}</td></tr>
   <tr><td>Venue</td><td>${esc(b.venue || '—')}</td></tr>
   <tr><td>Catatan</td><td>${esc(b.notes || '—')}</td></tr>
@@ -540,7 +556,7 @@ function openCalModal(dateStr) {
   const dayBooks = allBookings.filter(b => b.wedding_date === dateStr);
   document.getElementById('cal-modal-list').innerHTML = dayBooks.map(b => {
     const color = STATUS.color[b.status] || '#888';
-    const pkg   = PACKAGE[b.package] || b.package || '—';
+    const pkg   = b.package_name_snapshot || PACKAGE[b.package] || b.package || '—';
     return `
       <div class="cal-modal-item" onclick="closeCalModal(); openDetailModal('${b.id}')">
         <div class="cal-modal-item-header">
@@ -630,7 +646,7 @@ function getPackageData() {
   const map = {};
   allBookings.forEach(b => {
     if (!b.package) return;
-    const label = PACKAGE[b.package] || b.package;
+    const label = b.package_name_snapshot || PACKAGE[b.package] || b.package;
     map[label] = (map[label] || 0) + 1;
   });
   return { labels: Object.keys(map), values: Object.values(map) };
@@ -792,7 +808,7 @@ function fillTemplate(type) {
 
   const nama  = b.couple_name || '';
   const tgl   = formatDate(b.wedding_date, { weekday:'long', day:'numeric', month:'long', year:'numeric' });
-  const paket = PACKAGE[b.package] || b.package || '—';
+  const paket = b.package_name_snapshot || PACKAGE[b.package] || b.package || '—';
 
   const templates = {
     konfirmasi_dp:
@@ -1135,7 +1151,7 @@ async function openKruDetailModal(id) {
     jadwalEl.innerHTML = mendatang.map(a => {
       const b   = a.bookings;
       const tgl = formatDate(b.wedding_date, { weekday:'short', day:'numeric', month:'short', year:'numeric' });
-      const pkg = PACKAGE[b.package] || b.package || '—';
+      const pkg = b.package_name_snapshot || PACKAGE[b.package] || b.package || '—';
       const col = STATUS.color[b.status] || '#888';
       return `
         <div class="kru-jadwal-item">

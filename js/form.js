@@ -122,6 +122,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     const btn = document.getElementById('submit-btn');
+    if (btn.disabled) return;
 
     const data = {
       couple_name:  sanitize(document.getElementById('couple_name').value),
@@ -129,6 +130,7 @@ document.addEventListener('DOMContentLoaded', () => {
       phone:        sanitize(document.getElementById('phone').value),
       wedding_date: document.getElementById('wedding_date').value,
       package:      document.getElementById('package').value,
+      voucher_code: document.getElementById('voucher-code').value.trim().toUpperCase() || null,
       city:         document.getElementById('city').value,
       venue:        sanitize(document.getElementById('venue').value),
       notes:        sanitize(document.getElementById('notes').value),
@@ -144,6 +146,8 @@ document.addEventListener('DOMContentLoaded', () => {
     btn.textContent = 'Memproses...';
 
     try {
+      const quote = await refreshBookingQuote();
+      if (!quote) { btn.disabled = false; btn.textContent = 'Dapatkan Pricelist & Konsultasi Gratis'; return; }
       const { error } = await db.from('bookings').insert([data]);
 
       if (error) {
@@ -176,6 +180,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       // Sukses
       setRateLimit();
+      sessionStorage.setItem('memorlea_package_name', quote.package_name);
       const token = btoa(data.email + ':' + data.wedding_date + ':' + Date.now());
       sessionStorage.setItem('memorlea_token',   token);
       sessionStorage.setItem('memorlea_name',    data.couple_name);

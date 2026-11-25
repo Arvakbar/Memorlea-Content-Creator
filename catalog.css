@@ -1,0 +1,21 @@
+.catalog-layout{display:grid;grid-template-columns:minmax(280px,360px) minmax(0,1fr);gap:24px;align-items:start}
+.catalog-panel{background:#fff;border-radius:16px;padding:24px;box-shadow:0 2px 12px #0000000a}
+.catalog-panel h2{font-family:var(--font-display);font-size:1.25rem;margin-bottom:18px}
+.catalog-panel p{line-height:1.65;font-size:.85rem}
+.catalog-panel label{display:block;font-size:.8rem;font-weight:600;margin:14px 0 6px}
+.catalog-panel input:not([type=checkbox]),.catalog-panel textarea{width:100%;padding:10px;border:1px solid var(--lavender);border-radius:7px;font:inherit;font-size:.85rem}
+.catalog-panel input:disabled{background:#f2f2f2;color:#666}
+.catalog-panel .catalog-check{display:flex;align-items:center;gap:10px;margin:18px 0}
+.catalog-actions{display:flex;gap:10px;margin:18px 0}
+.catalog-actions button{padding:10px 18px}
+.catalog-message{min-height:24px;margin-top:12px;overflow-wrap:anywhere}
+.catalog-table{overflow-x:auto}.catalog-table table{min-width:550px;width:100%;border-collapse:collapse}
+.catalog-table th,.catalog-table td{text-align:left;padding:14px 10px;border-bottom:1px solid #eee;font-size:.8rem}
+.catalog-table th{color:var(--plum)}
+.catalog-intro{margin-bottom:20px;color:var(--mid);font-size:.9rem;line-height:1.7}
+.booking-quote{padding:16px;background:var(--blush,#faf4f5);border-radius:12px;font-size:.9rem;line-height:1.7;margin-bottom:20px}
+.catalog-public-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:24px}
+.catalog-public-card{background:white;border:1px solid var(--lavender);border-radius:16px;padding:24px;white-space:pre-line}
+.catalog-public-card h3{font-family:var(--font-display);font-size:1.5rem;color:var(--plum)}
+.catalog-public-card p{margin-top:12px;line-height:1.65}
+@media(max-width:1100px){.catalog-layout{grid-template-columns:1fr}}

@@ -32,14 +32,7 @@ document.addEventListener('click', e => {
 
 // ── BUILD TEMPLATE WA ──
 function buildWALink() {
-  const PACKAGE_LABEL = {
-    luxury:     'Luxury Wedding - Rp1.750.000',
-    parelta:    'Parelta Package - Rp1.000.000',
-    tara:       'Tara Package - Rp725.000',
-    sean:       'Sean Package - Rp575.000',
-    prewedding: 'Pre-Wedding - Rp450.000',
-    nonwedding: 'Non-Wedding - Rp400.000',
-  };
+
 
   const name  = sessionStorage.getItem('memorlea_name')    || '';
   const phone = sessionStorage.getItem('memorlea_phone')   || '';
@@ -58,7 +51,7 @@ function buildWALink() {
     } catch(e) { tgl = date; }
   }
 
-  const pkgLabel = PACKAGE_LABEL[pkg] || pkg;
+  const pkgLabel = sessionStorage.getItem('memorlea_package_name') || pkg;
 
   // Bangun baris detail - hanya tampilkan yang ada isinya
   const details = [];

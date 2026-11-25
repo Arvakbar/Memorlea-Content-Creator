@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="referrer" content="no-referrer"/>
+  <title>Register – Memorléa</title>
+  <link rel="icon" type="image/png" href="assets/images/logo.png"/>
+  <link rel="stylesheet" href="style.css"/>
+  <link rel="stylesheet" href="auth.css"/>
+</head>
+<body class="auth-page" data-auth-page="register">
+<main class="login-card">
+  <a href="index.html"><img src="assets/images/logo.png" alt="Memorléa"/></a>
+  <h1 class="login-title">Register</h1>
+  <p class="login-sub">Buat akun Memorléa. Akses Admin memerlukan persetujuan pengelola.</p>
+  <div id="auth-message" class="auth-message" role="status" aria-live="polite" hidden></div>
+  <form id="register-form">
+    <div class="form-group"><label for="email">Email</label><input type="email" id="email" autocomplete="email" maxlength="254" required/></div>
+    <div class="form-group"><label for="password">Password</label><input type="password" id="password" autocomplete="new-password" minlength="8" aria-describedby="password-hint" required/><p id="password-hint" class="auth-hint">Minimal 8 karakter.</p></div>
+    <div class="form-group"><label for="confirm-password">Konfirmasi Password</label><input type="password" id="confirm-password" autocomplete="new-password" minlength="8" required/></div>
+    <button type="submit" id="register-btn" class="form-submit">Daftar</button>
+  </form>
+  <p class="auth-links">Sudah punya akun? <a href="admin-login.html">Login</a><br/><a href="index.html">Kembali ke Website</a></p>
+</main>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/supabase.js"></script>
+<script src="js/auth-common.js"></script>
+<script src="js/register.js"></script>
+</body>
+</html>

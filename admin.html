@@ -6,6 +6,8 @@
   <title>Admin Dashboard – Memorléa</title>
   <link rel="icon" type="image/png" href="assets/images/logo.png"/>
   <link rel="stylesheet" href="style.css"/>
+  <link rel="stylesheet" href="auth.css"/>
+  <link rel="stylesheet" href="catalog.css"/>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
     /* ── TABS ── */
@@ -63,7 +65,7 @@
     .avail-stat-label{font-size:0.7rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--mid)}
   </style>
 </head>
-<body class="admin-page">
+<body class="admin-page auth-pending">
 
 <!-- Sidebar -->
 <aside class="admin-sidebar" id="admin-sidebar">
@@ -88,6 +90,8 @@
       </a>
     </li>
     <li><a href="#" onclick="showSection('stats',this)">⚙️ Stats Counter</a></li>
+    <li><a href="#" onclick="showSection('packages',this)">&#128230; Paket Layanan</a></li>
+    <li><a href="#" onclick="showSection('vouchers',this)">&#127903; Voucher / Diskon</a></li>
     <li style="margin-top:2rem;border-top:1px solid rgba(255,255,255,0.1);padding-top:1rem">
       <a href="index.html">🌐 Lihat Website</a>
     </li>
@@ -280,6 +284,22 @@
 
   </div>
 
+<section class="admin-section" id="sec-packages">
+ <p class="catalog-intro">Kelola paket yang dapat dipilih pelanggan. Nonaktifkan paket untuk menghentikan pemesanan baru; rincian booking lama tetap tersimpan.</p>
+ <div class="catalog-layout"><div class="catalog-panel"><h2 id="packages-form-title">Tambah Paket</h2>
+ <form id="packages-form" novalidate><label for="packages-code">Kode paket (unik)</label><input id="packages-code" name="code" type="text" required minlength="2" maxlength="40" placeholder="contoh: wedding-premium"/><label for="packages-name">Nama paket</label><input id="packages-name" name="name" type="text" required minlength="3" maxlength="80"/><label for="packages-price">Harga (Rp100.000-Rp10.000.000)</label><input id="packages-price" name="price" type="number" required min="100000" max="10000000" step="1"/><label for="packages-duration_hours">Durasi (1-24 jam)</label><input id="packages-duration_hours" name="duration_hours" type="number" required min="1" max="24" step="1"/><label for="packages-description">Deskripsi layanan</label><textarea id="packages-description" name="description" rows="4" maxlength="1000"></textarea><label class="catalog-check"><input name="active" type="checkbox" checked/> Aktif</label>
+ <div class="catalog-actions"><button type="submit" class="btn btn-primary">Simpan</button><button type="button" id="packages-cancel" class="action-btn">Batal / Baru</button></div></form>
+ <p id="packages-message" class="catalog-message" role="status" aria-live="polite"></p></div>
+ <div class="catalog-panel"><h2>Daftar Paket</h2><label for="packages-search">Cari nama atau kode</label><input id="packages-search" type="search" placeholder="Cari..."/><div class="catalog-actions"><button type="button" id="packages-reload" class="action-btn action-edit">Muat ulang</button></div>
+ <div class="catalog-table"><table><thead><tr><th>Nama / Kode</th><th>Harga</th><th>Durasi</th><th>Status</th><th>Aksi</th></tr></thead><tbody id="packages-rows"></tbody></table></div></div></div></section>
+<section class="admin-section" id="sec-vouchers">
+ <p class="catalog-intro">Voucher berlaku untuk semua paket aktif, satu voucher per booking. Diskon dihitung dari harga paket, dibulatkan ke bawah ke rupiah penuh; biaya tambahan di luar paket tidak termasuk.</p>
+ <div class="catalog-layout"><div class="catalog-panel"><h2 id="vouchers-form-title">Tambah Voucher</h2>
+ <form id="vouchers-form" novalidate><label for="vouchers-code">Kode voucher (unik)</label><input id="vouchers-code" name="code" type="text" required minlength="3" maxlength="24" placeholder="contoh: MEMORLEA10"/><label for="vouchers-percent">Diskon (1-50%)</label><input id="vouchers-percent" name="percent" type="number" required min="1" max="50" step="1"/><label for="vouchers-min_purchase">Minimal transaksi (Rp0-Rp10.000.000)</label><input id="vouchers-min_purchase" name="min_purchase" type="number" required min="0" max="10000000" step="1" value="0"/><label for="vouchers-starts_on">Berlaku mulai (WIB)</label><input id="vouchers-starts_on" name="starts_on" type="date" required/><label for="vouchers-ends_on">Berlaku sampai (WIB, termasuk hari ini)</label><input id="vouchers-ends_on" name="ends_on" type="date" required/><label class="catalog-check"><input name="active" type="checkbox" checked/> Aktif</label>
+ <div class="catalog-actions"><button type="submit" class="btn btn-primary">Simpan</button><button type="button" id="vouchers-cancel" class="action-btn">Batal / Baru</button></div></form>
+ <p id="vouchers-message" class="catalog-message" role="status" aria-live="polite"></p></div>
+ <div class="catalog-panel"><h2>Daftar Voucher</h2><label for="vouchers-search">Cari kode</label><input id="vouchers-search" type="search" placeholder="Cari..."/><div class="catalog-actions"><button type="button" id="vouchers-reload" class="action-btn action-edit">Muat ulang</button></div>
+ <div class="catalog-table"><table><thead><tr><th>Kode</th><th>Diskon / Minimum</th><th>Masa berlaku</th><th>Status</th><th>Aksi</th></tr></thead><tbody id="vouchers-rows"></tbody></table></div></div></div></section>
 </main>
 
 <!-- ── MODAL: Tambah / Edit Kru ── -->
@@ -430,6 +450,7 @@
         <span id="admin-notes-saved" style="display:none;font-size:0.75rem;color:#16a34a;margin-left:0.5rem">✓ Tersimpan</span>
       </div>
 
+      <div class="detail-item full"><label>Rincian Harga Booking</label><p id="d-price-summary"></p></div>
       <!-- Riwayat Status -->
       <div class="detail-item full">
         <label>🕐 Riwayat Status</label>
@@ -524,6 +545,9 @@
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="js/supabase.js"></script>
+<script src="js/auth-common.js"></script>
+<script src="js/catalog-rules.js"></script>
+<script src="js/admin-catalog.js"></script>
 <script src="js/admin.js"></script>
 </body>
 </html>

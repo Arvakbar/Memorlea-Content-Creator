@@ -7,6 +7,7 @@
   <meta name="description" content="Isi formulir konsultasi untuk mendapatkan akses pricelist dan konsultasi gratis bersama Memorléa."/>
   <link rel="icon" type="image/png" href="assets/images/logo.png"/>
   <link rel="stylesheet" href="style.css"/>
+<link rel="stylesheet" href="catalog.css"/>
 </head>
 <body>
 
@@ -70,19 +71,7 @@
       <div class="form-grid-2">
         <div class="form-group">
           <label for="package">Service Package yang Diminati <span>*</span></label>
-          <select id="package" name="package" required>
-            <option value="">— Pilih Paket —</option>
-            <optgroup label="Wedding Packages">
-              <option value="luxury">Luxury Wedding – Rp1.750.000</option>
-              <option value="parelta">Parelta Package – Rp1.000.000</option>
-              <option value="tara">Tara Package – Rp725.000</option>
-              <option value="sean">Sean Package – Rp575.000</option>
-            </optgroup>
-            <optgroup label="Event Packages">
-              <option value="prewedding">Pre-Wedding – Rp450.000</option>
-              <option value="nonwedding">Non-Wedding – Rp400.000</option>
-            </optgroup>
-          </select>
+          <select id="package" name="package" required disabled><option value="">Memuat paket...</option></select>
           <p class="form-error" id="err-package">Paket wajib dipilih</p>
         </div>
         <div class="form-group">
@@ -107,6 +96,7 @@
         </div>
       </div>
 
+      <div class="form-group"><label for="voucher-code">Kode voucher (opsional)</label><input id="voucher-code" type="text" maxlength="24" placeholder="Contoh: MEMORLEA10"/><button type="button" id="check-voucher" class="action-btn action-edit" style="margin-top:10px">Cek Voucher</button></div><p id="booking-quote" class="booking-quote" role="status" aria-live="polite">Memuat paket...</p>
       <div class="form-group">
         <label for="venue">Lokasi / Venue</label>
         <input type="text" id="venue" name="venue" placeholder="Contoh: MOG, Ritz Carlton, dll" maxlength="150"/>
@@ -143,7 +133,7 @@
         <p class="form-error" id="err-consent">Persetujuan wajib dicentang</p>
       </div>
 
-      <button type="submit" class="form-submit" id="submit-btn">
+      <button type="submit" class="form-submit" id="submit-btn" disabled>
         Dapatkan Pricelist &amp; Konsultasi Gratis
       </button>
       <p class="rate-limit-msg" id="rate-limit-msg" style="display:none">Terlalu banyak permintaan. Coba lagi dalam beberapa menit.</p>
@@ -206,6 +196,8 @@ function toggleConsent() {
 </script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="js/supabase.js"></script>
+<script src="js/catalog-rules.js"></script>
+<script src="js/booking-catalog.js"></script>
 <script src="js/form.js"></script>
 </body>
 </html>
